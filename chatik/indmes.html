@@ -14,7 +14,7 @@
    <div class="wrapper">
      <div class="two"       id="changeMes"      style="display:none; text-align:center"> </div>
      <div class="four"      id="send"           style="display:none;text-align:center"></div>
-    <!--  <div class="one"       id="regORloginArea" style="display:none" > </div> -->
+     <div class="one"       id="searchit"       style="display:none;text-align:center" > </div>
      <div class="three"     id="usersArea"      style="overflow-y:scroll; display:none" ></div>
      <div class="dialogAbove"                   style="display:none"></div>
      <div class="dialog"    id="chatArea"       style="text-align:center;overflow-y:scroll; display:none" >
@@ -22,15 +22,19 @@
      
      </div> 
    </div>
+   <div id="results"></div>
    <div class="templates">
       <script type="x-template/underscore" id="InputNButton">  
-          <input type="text" id="searchingText">
-          <button class="submit">search</button>  
+          <div id="searchArea"> <input type="text" id="searchingText">
+          <button class="but" id="searcher">search</button>  </div>
+
       </script>
-      <script type="x-template/underscore" id="mesV">
+      <script type="x-template/underscore" id="mesV" >
        <div class="message"> 
-       <b><%=messageText%></b>   <%=sentTime%> has modifications: <%=modifNotmodif%>, 
-        was deleted: <%=delNotdel%>,  from <b><%=owner%></b><label class="but" id="del"> del</label><label class="but" id="change"> modify</label> <p id ="mesID" style="display:none"><%=id%><p> 
+         <b><%=messageText%></b>   <%=sentTime%> has modifications: <%=modifNotmodif%>, 
+         was deleted: <%=delNotdel%>,  from <b><%=owner%></b> <label class="but" id="del">  del  </label>
+         <label class="but" id="change">  modify  </label> <label class="but" id="color">  color  </label>
+          <p id ="mesID" style="display:none"><%=id%><p> 
 
         </div>
       </script>
@@ -70,8 +74,8 @@
         </div>
       </script>
       <script type="x-template/underscore" id="mainArea">  
-        <div id="currentChatArea"><textarea id="Text1" cols="15" rows="2"></textarea>  </div> <button id="sendMessageBut">send</button>
-        </div>         
+        <div id="currentChatArea"><textarea id="Text1" cols="20" rows="2"></textarea>   <button id="sendMessageBut" class="but">send</button>
+               
       </script>
       <script type="x-template/underscore" id="start">
         <p> Welcome to MyChat world, login or register to start Chatting!</p>
@@ -82,7 +86,7 @@
         <p> pryanikh@gmail.com </p>
       </script>
       <script type="x-template/underscore" id="friends">
-        <div style="border: 2px solid black;border-radius: 5px;" class="f"> <p class="friendName"><%=username %></p><button id="delChat" class="but">del</button><button id="clearChat" class="but">clear</button></div>
+        <div style="border: 2px solid black;border-radius: 5px;  text-align:center" class="f"> <p class="friendName"><%=username %></p><button id="delChat" class="but">del</button><button id="clearChat" class="but">clear</button></div>
       </script>
    </div>
   </body>

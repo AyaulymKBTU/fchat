@@ -12,6 +12,7 @@ var getAllUsers=function()
 {
   return localStorage.getItem("Myusers");
 };
+
 var AddUserToUsers=function(username)
 {
   var us=getAllUsers();
@@ -47,7 +48,8 @@ var mesView=Marionette.View.extend({
           b:'#biwka',
           id:"#mesID",
           mod:'#change',
-          del:'#del'
+          del:'#del',
+          color:'#color'
         },
     events: {
       'click @ui.del':function(){ 
@@ -74,8 +76,13 @@ var mesView=Marionette.View.extend({
              s=s.substring(0,s.length-2);
            
              localStorage.setItem(currentUser+'N'+selectedFriend,s);
-             localStorage.setItem(selectedFriend+'N'+currentUser,s);},
+             localStorage.setItem(selectedFriend+'N'+currentUser,s);
+      },
       'click @ui.div':function(){},
+      'click @ui.color':function(){
+        this.colorful();
+
+      },
       'click @ui.mod': function(){
             var w=this.ui.id.html().trim()
             var elem= messagesOfcurrentDialog.collection.get(w);
@@ -102,10 +109,21 @@ var mesView=Marionette.View.extend({
              localStorage.setItem(currentUser+'N'+selectedFriend,s);
              localStorage.setItem(selectedFriend+'N'+currentUser,s);
             
-          }
-           
+        }         
+    },
+    colorful:function()
+    {var co=prompt("enter color code: 1-red,2-white,3-yellow,4-blue,5-grey");
+       if(co==1)
+         this.ui.div.css('background-color','red'); 
+        else if(co==2)
+        this.ui.div.css('background-color','white');
+        else if(co==3)
+        this.ui.div.css('background-color','yellow');
+        else if(co==4)
+        this.ui.div.css('background-color','blue');
+        else if(co==5)
+        this.ui.div.css('background-color','grey');}
 
-      }
 });
 var messagesList = Marionette.CollectionView.extend({
     collection: new Backbone.Collection(),
@@ -140,7 +158,7 @@ var changeNameAndStat=function()
 {   var d=new user(JSON.parse(localStorage.getItem(currentUser)));
     var t=new Date();
   //alert(JSON.stringify(d));
-              $('.two').html( '<button id="changeSt">change status</button><p>  </p><button id="exit">exit</button>');
+              $('.two').html( '<button id="changeSt" class="bs">change status</button><p>  </p><button id="exit" class="bs">exit</button>');
               $('#changeSt').click(function(){var stat=prompt('Please enter new status:');
                 
                 d.set('status',stat);
@@ -166,15 +184,11 @@ var userView=Marionette.View.extend({
             $('#allmessages').html(''); 
              messagesOfcurrentDialog.collection.reset();
                  userID=localStorage.getItem('id'+selectedFriend+'N'+currentUser);
-              selectedFriend=this.ui.divchik.html().trim();
-             
-            
-                 
-          var d=new user(JSON.parse(localStorage.getItem(selectedFriend)));
-              $('.dialogAbove').html( "Dialog with <b>"+selectedFriend+'</b>  status:'+ d.get('status')+'  was at: '+d.get('lastActive'));
-
+              selectedFriend=this.ui.divchik.html().trim();                
+             var d=new user(JSON.parse(localStorage.getItem(selectedFriend)));
+              $('.dialogAbove').html( "Dialog with <b>"+selectedFriend+'</b>  status:'+ d.get('status')+
+                '  was at: '+d.get('lastActive'));
            var chatik=localStorage.getItem(selectedFriend+'N'+currentUser);
-
                
               if(chatik!=null&&chatik!="")
                {
@@ -205,6 +219,37 @@ var usersList = Marionette.CollectionView.extend({
 });
 users=new usersList();
 
+var searchView=Marionette.View.extend({
+
+    template:'#InputNButton',
+    ui:     {
+             input: '#searchingText',
+             button: '#searcher'
+            },
+    events:{
+            'click @ui.button': function(){
+              $('#results').html('');
+            
+             var tosearch=this.ui.input.val();
+            
+             var mess=messagesOfcurrentDialog.collection.pluck('messageText');
+             if(tosearch!=""&&tosearch!=null){
+             var h=0;
+             mess=mess.toString().split(',');
+              
+             for(var i=0;i<mess.length;i++)
+             {
+              if(mess[i].includes(tosearch)==true)
+              {
+                  $('#results').append('<div style="background-color:pink;text-align:center">'+mess[i]+'</div>');
+              }
+              else
+                h++;
+             }}
+                 
+           }}
+
+});
 var currentChatView=Marionette.View.extend({
 
     template:'#mainArea',
@@ -248,7 +293,7 @@ var currentChatView=Marionette.View.extend({
               messagesOfcurrentDialog.collection.add(newm);
               $('#allmessages').append(messagesOfcurrentDialog.$el);
               messagesOfcurrentDialog.render();
-          updateMesList();
+              updateMesList();
 
              }
            }
@@ -303,7 +348,10 @@ var updateUserList = function(){
     users.collection.reset();
     $('#usersArea').html('');
     getFriendsList();
-
+    if(selectedFriend!="")
+    {var d=new user(JSON.parse(localStorage.getItem(selectedFriend)));
+     $('.dialogAbove').html( "Dialog with <b>"+selectedFriend+'</b>  status:'+ d.get('status')+
+                '  was at: '+d.get('lastActive'));}
     $('#usersArea').append(users.$el);
      users.render();
      }, 1000);
@@ -332,22 +380,25 @@ var updateUserList = function(){
               changeNameAndStat();
               uploadListOfUsers();
                 (new currentChatView({el:'.four'})).render();
+                (new searchView({el:'#searchit'})).render();
+
               }
             }
 });
  var getDataFromUser=function(str)
- {
- // var me=document.getElementById("usname").value; 
+{
+  // var me=document.getElementById("usname").value; 
   //var psw=document.getElementById("psw").value;
   currentUser=str.trim(); //alert(currentUser);
+   updateUserList();
   $('#regORloginArea').html('');
   $('#welcomeLorR').html(''); 
- };
+};
  var uploadLog=function(){
 
     $('#welcomeLorR').html(' ');
     (new loginPage({el:'#welcomeLorR'})).render();
-    $('.one').css("display", "block");
+   // $('.one').css("display", "block");
 };
 var regPage=Marionette.View.extend({
     template:'#register',
@@ -369,6 +420,8 @@ var regPage=Marionette.View.extend({
               changeNameAndStat();
               uploadListOfUsers();
               (new currentChatView({el:'.four'})).render();
+              (new searchView({el:'#searchit'})).render();
+              
  			 // show current user identifier with its status
               }
             }
@@ -377,7 +430,7 @@ var uploadReg=function(){
 
     $('#welcomeLorR').html(' ');
     (new regPage({el:'#welcomeLorR'})).render();
-    $('.one').css("display", "block");
+    //$('.one').css("display", "block");
 };
 
 
@@ -386,7 +439,8 @@ var createUser=function()
   var uname=document.getElementById("regname").value; 
   var psw=document.getElementById("regpsw").value;
   var stat=document.getElementById("status").value;
- 
+ if(stat=="")
+  stat=" no status, ";
   uname=uname.trim();
   //validate
   //userID++;
@@ -407,6 +461,7 @@ var uploadListOfUsers=function(){
    
       getFriendsList();
       $('#usersArea').append(users.$el);
+
        users.render();
       
 };
@@ -419,7 +474,8 @@ var getFriendsList=function(){
    var stringToUser=localStorage.getItem(userss[i]);
      var s=JSON.parse(stringToUser);
    e=new user(s);
-     users.collection.add(e);}
+     users.collection.add(e);
+   }
    }  
  };
 var welcomePage=Marionette.View.extend({

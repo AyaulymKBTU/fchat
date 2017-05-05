@@ -1,0 +1,88 @@
+<html>
+ <head>
+    <link rel="stylesheet" href="app.css">
+    <script src="vendor/jquery.js"></script>
+    <script src="vendor/json2.js"></script>
+    <script src="vendor/underscore.js"></script>
+    <script src="vendor/backbone.js"></script>
+    <script src="vendor/backbone.radio.js"></script>
+    <script src="vendor/backbone.marionette.min.js"></script>
+    <script src="appmes.js"></script>
+ </head>
+  <body>
+   <div id="welcomeLorR" style="text-align:center" > </div>
+   <div class="wrapper">
+     <div class="two"       id="changeMes"      style="display:none; text-align:center"> </div>
+     <div class="four"      id="send"           style="display:none;text-align:center"></div>
+    <!--  <div class="one"       id="regORloginArea" style="display:none" > </div> -->
+     <div class="three"     id="usersArea"      style="overflow-y:scroll; display:none" ></div>
+     <div class="dialogAbove"                   style="display:none"></div>
+     <div class="dialog"    id="chatArea"       style="text-align:center;overflow-y:scroll; display:none" >
+     <div id="allmessages" >allmessages</div>
+     
+     </div> 
+   </div>
+   <div class="templates">
+      <script type="x-template/underscore" id="InputNButton">  
+          <input type="text" id="searchingText">
+          <button class="submit">search</button>  
+      </script>
+      <script type="x-template/underscore" id="mesV">
+       <div class="message"> 
+       <b><%=messageText%></b>   <%=sentTime%> has modifications: <%=modifNotmodif%>, 
+        was deleted: <%=delNotdel%>,  from <b><%=owner%></b>
+        </div>
+      </script>
+      <script type="x-template/underscore" id="login">
+        <div>
+          <label><b>Username</b></label>
+          <input type="text"     placeholder="Enter Username" id="usname" required>
+          <br>
+          <br>
+          <label><b>PassWord</b></label>
+          <input type="password" placeholder="Enter Password" id="psw" required> 
+            <br>
+          <br>
+          <button id="logNewUser">login</button>     
+        </div>
+      </script>
+      <script type="x-template/underscore" id="register">
+        <div>
+          <label><b>Username</b></label>
+          <input type="text"     placeholder="Enter Username" id="regname" required>
+          <br>
+          <br>
+          <label><b>PassWord</b></label>
+          <input type="password" placeholder="Enter Password" id="regpsw" required>
+          <br> 
+          <br> 
+          <label><b>Status</b></label>
+          <input type="text"     placeholder="Enter Status"   id="status" >  
+          <br>
+          <br>
+          <button id="regNewUser">register</button>   
+        </div>
+      </script>
+      <script type="x-template/underscore" id="userData">
+        <div>
+          <%=username%>  <%=status%> <button> exit </button>
+        </div>
+      </script>
+      <script type="x-template/underscore" id="mainArea">  
+        <div id="currentChatArea"><textarea id="Text1" cols="15" rows="2"></textarea>  </div> <button id="sendMessageBut">send</button>
+        </div>         
+      </script>
+      <script type="x-template/underscore" id="start">
+        <p> Welcome to MyChat world, login or register to start Chatting!</p>
+        <div>          
+           <button id="loginButton">login</button>  
+           <button id="regButton">register</button>   
+        </div>
+        <p> pryanikh@gmail.com </p>
+      </script>
+      <script type="x-template/underscore" id="friends">
+        <div style="border: 2px solid black;border-radius: 5px;" class="f"> <p class="friendName"><%=username %></p><button id="delChat" class="but">del</button><button id="clearChat" class="but">clear</button></div>
+      </script>
+   </div>
+  </body>
+</html>

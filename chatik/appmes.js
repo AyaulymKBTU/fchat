@@ -466,6 +466,7 @@ var uploadListOfUsers=function(){
       
 };
 var getFriendsList=function(){
+  if(getAllUsers()!=null||getAllUsers()!=""){
  var userss=getAllUsers().split(',');
  var e;
  for(var i=0;i<userss.length;i++){ 
@@ -477,6 +478,7 @@ var getFriendsList=function(){
      users.collection.add(e);
    }
    }  
+ }
  };
 var welcomePage=Marionette.View.extend({
     template:'#start'

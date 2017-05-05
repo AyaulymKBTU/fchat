@@ -2,7 +2,7 @@ var currentUser="";
 var selectedFriend="";
 var users;//collection
 var messagesOfcurrentDialog;//collection
-var userID=0;
+var userID=-1;
 var time;
 var SaveAndAddUser=function(username,password)
 {
@@ -42,9 +42,70 @@ var message=Backbone.Model.extend({
 });
 var mesView=Marionette.View.extend({
     template:'#mesV',
+    ui: {
+          div: '.message',
+          b:'#biwka',
+          id:"#mesID",
+          mod:'#change',
+          del:'#del'
+        },
     events: {
- 
-           }
+      'click @ui.del':function(){ 
+            var w=this.ui.id.html().trim()
+            var elem= messagesOfcurrentDialog.collection.get(w);
+              elem.set('delNotdel',true);
+             var ch=localStorage.getItem(currentUser+'N'+selectedFriend);
+             var m=ch.split("&,");
+             var buf;
+             var i;
+             for( i=0;i<m.length;i++)
+             {
+                buf=new message(JSON.parse(m[i]));
+                if(buf.get('id')==(w))
+                  break;
+             }
+             var s="";
+             var j;
+             for(j=0;j<m.length;j++)
+             {
+              if(j!=i)
+                s+=m[j]+"&,";
+             }
+             s=s.substring(0,s.length-2);
+           
+             localStorage.setItem(currentUser+'N'+selectedFriend,s);
+             localStorage.setItem(selectedFriend+'N'+currentUser,s);},
+      'click @ui.div':function(){},
+      'click @ui.mod': function(){
+            var w=this.ui.id.html().trim()
+            var elem= messagesOfcurrentDialog.collection.get(w);
+            // messagesOfcurrentDialog.collection.remove(elem);
+            var chT=prompt("change message to: ");
+            elem.set('messageText',chT);
+              elem.set('modifNotmodif',true);
+             var ch=localStorage.getItem(currentUser+'N'+selectedFriend);
+             var m=ch.split("&,");
+             var buf;
+             for(var i=0;i<m.length;i++)
+             {
+                buf=new message(JSON.parse(m[i]));
+                if(buf.get('id')==(w))
+                  m[i]=JSON.stringify(elem);
+             }
+             var s="";
+             for(var i=0;i<m.length;i++)
+             {
+                s+=m[i]+"&,";
+             }
+             s=s.substring(0,s.length-2);
+           
+             localStorage.setItem(currentUser+'N'+selectedFriend,s);
+             localStorage.setItem(selectedFriend+'N'+currentUser,s);
+            
+          }
+           
+
+      }
 });
 var messagesList = Marionette.CollectionView.extend({
     collection: new Backbone.Collection(),
@@ -55,6 +116,7 @@ var messagesList = Marionette.CollectionView.extend({
      }  
 });
 messagesOfcurrentDialog=new messagesList();
+localStorage.setItem('id'+selectedFriend+'N'+currentUser ,userID);
 var renderMes=function()
 {
   messagesOfcurrentDialog.render();
@@ -76,7 +138,7 @@ var user=Backbone.Model.extend({
 });
 var changeNameAndStat=function()
 {   var d=new user(JSON.parse(localStorage.getItem(currentUser)));
-  var t=new Date();
+    var t=new Date();
   //alert(JSON.stringify(d));
               $('.two').html( '<button id="changeSt">change status</button><p>  </p><button id="exit">exit</button>');
               $('#changeSt').click(function(){var stat=prompt('Please enter new status:');
@@ -103,7 +165,7 @@ var userView=Marionette.View.extend({
              'click @ui.div': function(){  
             $('#allmessages').html(''); 
              messagesOfcurrentDialog.collection.reset();
-                  
+                 userID=localStorage.getItem('id'+selectedFriend+'N'+currentUser);
               selectedFriend=this.ui.divchik.html().trim();
              
             
@@ -155,9 +217,13 @@ var currentChatView=Marionette.View.extend({
               //validate
               //sending actions: 
               time=new Date();
-              var newm=new message({messageText:this.ui.input.val(),
+             userID=localStorage.getItem('id'+selectedFriend+'N'+currentUser);
+              userID++;
+              var newm=new message({id:userID, messageText:this.ui.input.val(),
                 sentTime:time.getHours()+':'+time.getMinutes(),
                  owner:currentUser,receiver:selectedFriend});
+              localStorage.setItem('id'+selectedFriend+'N'+currentUser,userID);
+              localStorage.setItem('id'+currentUser+'N'+selectedFriend,userID);
               // add it to collection
               
               var chat=localStorage.getItem(selectedFriend+'N'+currentUser);
